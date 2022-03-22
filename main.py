@@ -8,6 +8,8 @@ class Snake(pygame.sprite.Sprite):
         super().__init__()
         self.x_pos = 0
         self.y_pos = 0
+        self.tail = []
+        self.pos = 1
         self.snake_head_left = pygame.image.load('Resources/Snake/snake-head-left.png')
         self.snake_head_right = pygame.image.load('Resources/Snake/snake-head-right.png')
         self.snake_head_up = pygame.image.load('Resources/Snake/snake-head-up.png')
@@ -26,21 +28,25 @@ class Snake(pygame.sprite.Sprite):
         if keys[pygame.K_LEFT]:
             self.x_pos = -10
             self.y_pos = 0
+            self.pos = 1
             self.snake_head = self.snake_head_left
         
         elif keys[pygame.K_RIGHT]:
             self.x_pos = 10
             self.y_pos = 0
+            self.pos = 3
             self.snake_head = self.snake_head_right
         
         elif keys[pygame.K_UP]:
            self.y_pos = -10
            self.x_pos = 0
+           self.pos = 2
            self.snake_head = self.snake_head_up
         
         elif keys[pygame.K_DOWN]:
             self.y_pos = 10
             self.x_pos = 0
+            self.pos = 4
             self.snake_head = self.snake_head_down
 
     def snake_move(self):    
@@ -59,7 +65,8 @@ class Snake(pygame.sprite.Sprite):
         self.image = self.snake_head
 
     def eaten_food(self):
-        pass
+        self.tail_rect = self.snake_body_1.get_rect()
+        self.tail_rect(midbottom = (60,60))
 
     def eaten_tail(self):
         pass
@@ -67,6 +74,7 @@ class Snake(pygame.sprite.Sprite):
     def update(self):
         self.snake_input()
         self.snake_move()
+        self.eaten_food()
 #check movement 
 #check eating food or snail tail
 
@@ -121,6 +129,8 @@ while True:
 
     snake.draw(screen)
     snake.update()
+
+    
 
 
 
