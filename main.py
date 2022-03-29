@@ -3,24 +3,26 @@ from sys import exit
 from random import randint
 
 #inherit from sprite
-class Snake(pygame.sprite.Sprite):
+class Snake(object):
     def __init__(self):
         super().__init__()
         self.x_pos = 0
         self.y_pos = 0
-        self.tail = []
+        self.tails = []
+        
         self.pos = 1
         self.snake_head_left = pygame.image.load('Resources/Snake/snake-head-left.png')
         self.snake_head_right = pygame.image.load('Resources/Snake/snake-head-right.png')
         self.snake_head_up = pygame.image.load('Resources/Snake/snake-head-up.png')
         self.snake_head_down = pygame.image.load('Resources/Snake/snake-head-down.png')
-        #self.snake_head = pygame.transform.rotozoom(self.snake_head,0,2)
+        
         self.snake_body_1 = pygame.image.load('Resources/Snake/snake-body1.png')
         self.snake_body_2 = pygame.image.load('Resources/Snake/snake-body2.png')
         
         self.snake_head = self.snake_head_left
-        self.image = self.snake_head
-        self.rect = self.image.get_rect(midbottom = (60,60))
+        #self.image = self.snake_head
+        self.rect = self.snake_head.get_rect(bottomright = (60,60))
+        self.tails.append(self.rect)
 
     def snake_input(self):
         keys = pygame.key.get_pressed()
@@ -50,23 +52,32 @@ class Snake(pygame.sprite.Sprite):
             self.snake_head = self.snake_head_down
 
     def snake_move(self):    
-        self.rect.x += self.x_pos
-        if self.rect.x > 318: 
-            self.rect.x = 0
-        elif self.rect.x < 0:
-            self.rect.x = 319
+        for i, rect in enumerate(self.tails):
+            rect.x += self.x_pos
+            if rect.x > 318: 
+                rect.x = 0
+            elif rect.x < 0:
+                rect.x = 319
 
-        self.rect.y += self.y_pos
-        if self.rect.y > 310:
-            self.rect.y = 0
-        elif self.rect.y < 1:
-            self.rect.y = 319
+            rect.y += self.y_pos
+            if rect.y > 310:
+                rect.y = 0
+            elif rect.y < 1:
+                rect.y = 319
 
-        self.image = self.snake_head
+        #self.image = self.snake_head
 
     def eaten_food(self):
-        self.tail_rect = self.snake_body_1.get_rect()
-        self.tail_rect(midbottom = (60,60))
+        #self.tail_rect = self.snake_body_1.get_rect()
+        #self.tail_rect(midbottom = (60,60))
+        tail_image = self.snake_body_1
+        pos = len(self.tails)-1
+        x_pos = self.tails[pos].x 
+        y_pos = self.tails[pos].y 
+        tail_rect = tail_image.get_rect(bottomright = (60,60))
+
+        self.tails.append(tail_rect)
+        pass
 
     def eaten_tail(self):
         pass
@@ -116,6 +127,7 @@ while True:
             pygame.quit()
             print(f'Your score was :{score}')
             exit()
+
     screen.fill((0,0,0))
 
     if collision_cake_eaten():
@@ -123,6 +135,9 @@ while True:
         score += 1
         if (score % 5 == 0):
             g_fps += 2
+
+        snake.sprite.eaten_food()
+        
 
     food_group.draw(screen)
     #food.update()
